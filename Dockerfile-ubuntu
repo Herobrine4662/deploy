@@ -1,0 +1,21 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV container=docker
+
+RUN apt-get update && \
+    apt-get install -y systemd systemd-sysv dbus dbus-user-session && \
+    apt-get install -y openssh-server openssh-client tmate && \
+    mkdir -p /var/run/sshd
+
+# Allow root SSH login
+RUN sed -i 's/#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    echo "root:root" | chpasswd
+
+# Disable service startup blocking
+RUN printf '#!/bin/sh\nexit 0\n' > /usr/sbin/policy-rc.d
+
+# Clean
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT ["/sbin/init"]

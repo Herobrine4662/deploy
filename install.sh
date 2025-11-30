@@ -32,18 +32,19 @@ RUN apt install -y tmate
 EOF
 
 echo Made successfully - Building Docker image.
-echo "Building Docker Image"
-sudo docker build -t ubuntu-22.04-with-tmate .
-echo Built successfully
-echo "Downloading main.py from the GitHub repository..."
-wget -O main.py https://raw.githubusercontent.com/katy-the-kat/discord-vps-creator/refs/heads/main/v3ds
+echo "Building Ubuntu Docker Image"
+docker build -t ubuntu-22.04-with-tmate -f Dockerfile-ubuntu .
+echo Ubuntu Built successfully
+echo "Building Debian Docker Image"
+docker build -t debian-with-tmate -f Dockerfile-debian .
+echo Debian Built successfully
 echo Downloaded successfully
 echo "Installing Python packages: discord and docker..."
 pip3 install discord docker
 echo "Please enter your Discord bot token, Make a bot at discord.dev and get the token, You dont need any intents:"
 read -r DISCORD_TOKEN
 echo "Updating main.py with the provided Discord token..."
-sed -i "s/TOKEN = ''/TOKEN = '$DISCORD_TOKEN'/" main.py
+sed -i "s/TOKEN = ''/TOKEN = '$DISCORD_TOKEN'/" v2.py
 echo "Starting the Discord bot..."
-echo "To start the bot in the future, run: python3 main.py"
-python3 main.py
+echo "To start the bot in the future, run: python3 v2.py"
+python3 v2.py
